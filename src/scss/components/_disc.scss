@@ -1,0 +1,28 @@
+.disc {
+  padding-top: 25rem;
+  padding-bottom: 20rem;
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 6.4rem;
+    font-weight: 300;
+    gap: 2rem;
+
+    margin-bottom: 31rem;
+    span {
+      &:first-child {
+        margin-left: 20rem;
+      }
+      &:last-child {
+        margin-left: -32rem;
+      }
+    }
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: center;
+  }
+}

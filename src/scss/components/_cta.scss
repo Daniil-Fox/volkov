@@ -1,0 +1,39 @@
+.cta {
+  padding: 8rem 0 14rem;
+  &__container {
+    max-width: 116.6rem;
+    margin: 0 auto;
+  }
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12rem;
+  }
+
+  &__desc {
+    margin: 0;
+    font-weight: 300;
+    font-size: 1.8rem;
+    line-height: 100%;
+    letter-spacing: -0.02em;
+    text-align: right;
+    color: var(--text);
+  }
+  &__title {
+    flex-shrink: 0;
+    margin: 0;
+    font-weight: 300;
+    font-size: 6.4rem;
+    line-height: 100%;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--h);
+
+    span {
+      display: block;
+      &:first-child {
+        margin-left: -23rem;
+      }
+    }
+  }
+}

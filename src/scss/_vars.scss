@@ -1,0 +1,21 @@
+// если вы хотите использовать sass-переменные - удалите root
+// colors
+:root {
+  // base
+  --font-family: "Geologica", sans-serif;
+  --second-family: "NEXT ART", sans-serif;
+  --third-family: "Grafita", sans-serif;
+  --font3: "Corsa Grotesk", sans-serif;
+  --font4: "Rubik", sans-serif;
+  --content-width: 176rem;
+  --container-offset: 15px;
+  --container-width: calc(var(--content-width) + (var(--container-offset) * 2));
+
+  // colors
+  --h: #3c3c3c;
+  --button: #323232;
+  --line: #bebebe;
+  --text: #787878;
+  --color-input: #aaa;
+  --hover-button: #dcdfe3;
+}

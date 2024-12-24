@@ -1,0 +1,46 @@
+.main-portfolio {
+  padding: 8rem 0;
+  &__header {
+    padding-bottom: 4rem;
+    margin-bottom: 6.4rem;
+    border-bottom: 1px solid var(--line);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &--center {
+      justify-content: center;
+    }
+  }
+
+  &__btn {
+    &--plug {
+      opacity: 0;
+      pointer-events: none;
+      cursor: default;
+      user-select: none;
+    }
+  }
+
+  &__items {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 7rem;
+
+    margin-bottom: 6.4rem;
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.other {
+  .main-portfolio__header {
+    border: none;
+    padding-bottom: 0;
+    margin-bottom: 6.4rem;
+  }
+}

@@ -1,0 +1,78 @@
+.temp-mob {
+  position: relative;
+  display: inline-block;
+  &__mobile {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    height: 100%;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+  &__slider {
+    height: 100%;
+  }
+  .swiper-slide {
+    height: auto;
+  }
+  &__image {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 89%;
+    background-color: #000;
+    mask-image: url("./../img/mob-template.webp");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+  }
+}
+.temp-pc {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  &__pc {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+  .swiper-slide {
+    width: 100%;
+    height: 100%;
+  }
+  &__image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 5rem;
+    overflow: hidden;
+    padding: 2rem;
+    padding-top: 2.5rem;
+    img {
+      height: 100%;
+      width: 100%;
+      object-position: top;
+      object-fit: cover;
+    }
+  }
+}
