@@ -3,6 +3,14 @@
     <h2 class="title2 offer__title centered">Что мы предлагаем</h2>
   </div>
   <div class="offer__img">
-    <img src="./img/doing.webp" alt="" />
+    <picture>
+      <source
+        srcset="./img/doing.webp"
+        type="image/webp"
+        media="(min-width: 769px)"
+      />
+      <source srcset="./img/doing-mob.webp" type="image/webp" />
+      <img src="./img/doing.webp" alt="" />
+    </picture>
   </div>
 </section>

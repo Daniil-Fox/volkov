@@ -6,6 +6,10 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-end;
+  @include mobile {
+    height: 30.4rem;
+    padding: 1.2rem;
+  }
   @include hover {
     .portfolio-item__img:nth-child(2) {
       z-index: 3;
@@ -40,6 +44,9 @@
   &__name {
     margin-bottom: 1.2rem;
     text-align: right;
+    @include mobile {
+      margin: 0;
+    }
   }
   &__tags {
     display: flex;
@@ -59,5 +66,10 @@
     letter-spacing: -0.04em;
     text-transform: uppercase;
     color: #fcffff;
+
+    @include mobile {
+      padding: 0.8rem 1.2rem 0.6rem;
+      font-size: 0.8rem;
+    }
   }
 }

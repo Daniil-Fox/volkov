@@ -1,7 +1,9 @@
 .disc {
   padding-top: 25rem;
   padding-bottom: 20rem;
-
+  @include mobile {
+    display: none;
+  }
   &__title {
     display: flex;
     flex-direction: column;

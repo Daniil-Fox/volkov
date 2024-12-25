@@ -11,8 +11,13 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_canvas_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/canvas.js */ "./src/js/components/canvas.js");
 /* harmony import */ var _components_sliders_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/sliders.js */ "./src/js/components/sliders.js");
+/* harmony import */ var _components_modal_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/modal.js */ "./src/js/components/modal.js");
+/* harmony import */ var _components_hover_effect_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/hover-effect.js */ "./src/js/components/hover-effect.js");
 
 
+
+
+// import "./components/still.js";
 
 /***/ }),
 
@@ -23,7 +28,312 @@ __webpack_require__.r(__webpack_exports__);
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const imageSources = ["./../img/animation/01.webp", "./../img/animation/02.webp", "./../img/animation/03.webp", "./../img/animation/04.webp", "./../img/animation/05.webp", "./../img/animation/06.webp"];
+let currentImageIndex = 0;
+let lastImageTime = 0;
+let lastX = 0;
+let lastY = 0;
+const images = [];
+const interval = 60;
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
+window.addEventListener("resize", e => {
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+});
+const loadImage = src => {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => resolve(img);
+  });
+};
+const drawImages = () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  images.forEach(image => {
+    ctx.globalAlpha = image.opacity;
+    ctx.drawImage(image.img, image.x, image.y, image.width, image.height);
+  });
+};
+let lastTime = Date.now();
+const updateImages = () => {
+  let updateTime = Date.now();
+  lastTime = Date.now();
+  images.forEach((image, index) => {
+    // image.opacity -= 0.01;
+    if (image.opacity <= 0) {
+      images.splice(images.indexOf(image), 1);
+    } else {
+      // Smoothly move towards the cursor with a delay based on the index
+      const delayFactor = 0.04 - index * 0.003;
+      image.x += (image.targetX - image.x - 100) * delayFactor;
+      image.y += (image.targetY - image.y - 100) * delayFactor;
+    }
+  });
+  drawImages();
+  requestAnimationFrame(updateImages);
+};
+document.addEventListener("mousemove", async event => {
+  const now = Date.now();
+  const x = event.clientX - 20;
+  const y = event.clientY - 20;
+  if (Math.abs(x - lastX) < interval && Math.abs(y - lastY) < interval) return; // Check if cursor moved at least 40px
+  if (now - lastImageTime < 50) return; // Delay of 50ms
+  const img = await loadImage(imageSources[currentImageIndex]);
+  const newImage = {
+    img,
+    x,
+    y,
+    targetX: x - 20,
+    targetY: y - 20,
+    width: 0,
+    height: 0,
+    opacity: 1
+  };
+  images.push(newImage);
+  const growAnimation = () => {
+    if (newImage.width < 140 && newImage.height < 90) {
+      newImage.width += 3; // Increase width
+      newImage.height += 1.5; // Increase height
+      requestAnimationFrame(growAnimation);
+    }
+  };
+  growAnimation();
+  currentImageIndex = (currentImageIndex + 1) % imageSources.length;
+  lastImageTime = now;
+  lastX = x;
+  lastY = y;
+  document.addEventListener("mousemove", e => {
+    newImage.targetX = e.clientX;
+    newImage.targetY = e.clientY;
+  });
 
+  // Start fade-out after 100ms
+  setTimeout(() => {
+    const fadeOutAnimation = () => {
+      if (newImage.opacity > 0) {
+        newImage.opacity -= 0.05;
+        requestAnimationFrame(fadeOutAnimation);
+      } else {
+        // Remove image from canvas
+        setTimeout(() => {
+          ctx.clearRect(newImage.x, newImage.y, newImage.width, newImage.height);
+        }, 100);
+      }
+    };
+    fadeOutAnimation();
+  }, 300); // Delay before starting fade-out
+});
+updateImages();
+
+/***/ }),
+
+/***/ "./src/js/components/hover-effect.js":
+/*!*******************************************!*\
+  !*** ./src/js/components/hover-effect.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+const shader = {
+  vertex: `#ifdef GL_ES
+	precision mediump float;
+    #endif
+    attribute vec3 aVertexPosition;
+    attribute vec2 aTextureCoord;
+
+    // those are mandatory uniforms that the lib sets and that contain our model view and projection matrix
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    uniform mat4 texture0Matrix;
+    uniform mat4 texture1Matrix;
+    uniform mat4 mapMatrix;
+
+    // if you want to pass your vertex and texture coords to the fragment shader
+    varying vec3 vVertexPosition;
+    varying vec2 vTextureCoord0;
+    varying vec2 vTextureCoord1;
+    varying vec2 vTextureCoordMap;
+
+    void main() {
+	vec3 vertexPosition = aVertexPosition;
+
+	gl_Position = uPMatrix * uMVMatrix * vec4(vertexPosition, 1.0);
+
+	// set the varyings
+	vTextureCoord0 = (texture0Matrix * vec4(aTextureCoord, 0., 1.)).xy;
+	vTextureCoord1 = (texture1Matrix * vec4(aTextureCoord, 0., 1.)).xy;
+	vTextureCoordMap = (mapMatrix * vec4(aTextureCoord, 0., 1.)).xy;
+	vVertexPosition = vertexPosition;
+    }`,
+  fragment: `#ifdef GL_ES
+    precision mediump float;
+    #endif
+
+    #define PI2 6.28318530718
+    #define PI 3.14159265359
+    #define S(a,b,n) smoothstep(a,b,n)
+
+    uniform float uTime;
+    uniform float uProgress;
+    uniform vec2 uReso;
+    uniform vec2 uMouse;
+
+    // get our varyings
+    varying vec3 vVertexPosition;
+    varying vec2 vTextureCoord0;
+    varying vec2 vTextureCoord1;
+    varying vec2 vTextureCoordMap;
+
+    // the uniform we declared inside our javascript
+
+    // our texture sampler (default name, to use a different name please refer to the documentation)
+    uniform sampler2D texture0;
+    uniform sampler2D texture1;
+    uniform sampler2D map;
+    // http://www.flong.com/texts/code/shapers_exp/
+    float exponentialEasing (float x, float a){
+
+	float epsilon = 0.00001;
+	float min_param_a = 0.0 + epsilon;
+	float max_param_a = 1.0 - epsilon;
+	a = max(min_param_a, min(max_param_a, a));
+	if (a < 0.5){
+	// emphasis
+	a = 2.0 * a;
+	float y = pow(x, a);
+	return y;
+	} else {
+	// de-emphasis
+	a = 2.0 * (a-0.5);
+	float y = pow(x, 1.0 / (1.-a));
+	return y;
+	}
+    }
+    void main(){
+	vec2 uv0 = vTextureCoord0;
+	vec2 uv1 = vTextureCoord1;
+	float progress0 = uProgress;
+	float progress1 = 1. - uProgress;
+	vec4 map = texture2D(map, vTextureCoordMap );
+	float t0 = uv0.y * progress0 * map.r;
+	float t1 = uv1.y * progress1 * map.r;
+	uv0.x += t0;
+	uv1.x -= t1;
+	vec4 color = texture2D(texture0, uv0 );
+	vec4 color1 = texture2D( texture1, uv1 );
+	gl_FragColor = mix(color, color1, progress0 );
+    }`
+};
+class WEBGL {
+  constructor(set) {
+    this.canvas = set.canvas;
+    this.webGLCurtain = new Curtains(set.curtains);
+    this.planeElement = set.planeElement;
+    this.mouse = {
+      x: 0,
+      y: 0
+    };
+    this.params = {
+      vertexShader: shader.vertex,
+      fragmentShader: shader.fragment,
+      alwaysDraw: true,
+      widthSegments: 40,
+      heightSegments: 40,
+      // we now have 40*40*6 = 9600 vertices !
+      uniforms: {
+        time: {
+          name: "uTime",
+          // uniform name that will be passed to our shaders
+          type: "1f",
+          // this means our uniform is a float
+          value: 0
+        },
+        mousepos: {
+          name: "uMouse",
+          type: "2f",
+          value: [0, 0]
+        },
+        resolution: {
+          name: "uReso",
+          type: "2f",
+          value: [innerWidth, innerHeight]
+        },
+        progress: {
+          name: "uProgress",
+          type: "1f",
+          value: 0
+        }
+      }
+    };
+  }
+  initPlane() {
+    // create our plane mesh
+    this.plane = this.webGLCurtain.addPlane(this.planeElement, this.params);
+    // use the onRender method of our plane fired at each requestAnimationFrame call
+    if (this.plane) {
+      this.plane.onReady(() => {
+        this.update();
+        this.initEvent();
+      });
+    }
+  }
+  update() {
+    this.plane.onRender(() => {
+      this.plane.uniforms.time.value += 0.01; // update our time uniform value
+      this.plane.uniforms.resolution.value = [innerWidth, innerHeight];
+    });
+  }
+  initEvent() {
+    this.planeElement.addEventListener("mouseenter", e => {
+      TweenMax.to(this.plane.uniforms.progress, 0.5, {
+        value: 1
+      });
+    });
+    this.planeElement.addEventListener("mouseout", e => {
+      TweenMax.to(this.plane.uniforms.progress, 0.5, {
+        value: 0
+      });
+    });
+  }
+}
+document.querySelectorAll(".canvas-wrap").forEach(el => {
+  const id = el.querySelector(".canvas-plane").id;
+  const webgl = new WEBGL({
+    canvas: el.querySelector(".canvas-plane"),
+    curtains: id,
+    planeElement: el.getElementsByClassName("plane")[0]
+  });
+  webgl.initPlane();
+});
+
+/***/ }),
+
+/***/ "./src/js/components/modal.js":
+/*!************************************!*\
+  !*** ./src/js/components/modal.js ***!
+  \************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+const modal = document.querySelector(".modal");
+if (modal) {
+  const modalButtons = document.querySelectorAll(".modal-btn");
+  const modalCloseBtn = document.querySelector(".modal__close");
+  modalButtons.forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+      modal.classList.add("active");
+    });
+  });
+  modalCloseBtn.addEventListener("click", e => {
+    e.preventDefault();
+    modal.classList.remove("active");
+  });
+}
 
 /***/ }),
 
@@ -10555,6 +10865,58 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./_components.js */ "./src/js/_components.js");
 
+document.querySelectorAll(".form-file-input").forEach(input => {
+  input.addEventListener("change", function (event) {
+    const fileList = document.getElementById("file-list");
+    const files = Array.from(event.target.files);
+    fileList.innerHTML = ""; // Clear the list before adding new files
+    console.log(files);
+    files.forEach((file, index) => {
+      const fileItem = document.createElement("div");
+      fileItem.className = "form-file";
+      const fileName = document.createElement("span");
+      fileName.className = "form-file__name";
+      fileName.textContent = file.name;
+      const removeButton = document.createElement("button");
+      removeButton.className = "btn-reset form-file__rm";
+      removeButton.innerHTML = '<i class="fas fa-times">&times;</i>';
+      removeButton.addEventListener("click", e => {
+        e.preventDefault();
+        fileItem.remove();
+        files.splice(index, 1);
+        updateFileList(files);
+        console.log(files);
+      });
+      fileItem.appendChild(fileName);
+      fileItem.appendChild(removeButton);
+      fileList.appendChild(fileItem);
+    });
+    function updateFileList(updatedFiles) {
+      const dataTransfer = new DataTransfer();
+      updatedFiles.forEach(file => dataTransfer.items.add(file));
+      input.files = dataTransfer.files;
+      fileList.innerHTML = "";
+      updatedFiles.forEach((file, index) => {
+        const fileItem = document.createElement("div");
+        fileItem.className = "form-file";
+        const fileName = document.createElement("span");
+        fileName.className = "form-file__name";
+        fileName.textContent = file.name;
+        const removeButton = document.createElement("button");
+        removeButton.className = "btn-reset form-file__rm";
+        removeButton.innerHTML = "<i>&times;</i>";
+        removeButton.addEventListener("click", () => {
+          updatedFiles.splice(index, 1);
+          updateFileList(updatedFiles);
+          console.log(files);
+        });
+        fileItem.appendChild(fileName);
+        fileItem.appendChild(removeButton);
+        fileList.appendChild(fileItem);
+      });
+    }
+  });
+});
 })();
 
 /******/ })()

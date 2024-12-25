@@ -3,11 +3,16 @@
   position: relative;
   overflow: hidden;
   padding-bottom: 2rem;
+
+  @include mobile {
+    display: none;
+  }
   &__logo {
     width: 100%;
     height: auto;
     transform: translateY(-1.5rem);
     margin-bottom: 7rem;
+
     img {
       width: 100%;
       height: auto;

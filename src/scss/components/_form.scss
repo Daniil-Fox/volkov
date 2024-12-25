@@ -2,7 +2,10 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 6.4rem 3.2rem;
-
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
   &__label {
     position: relative;
     display: block;
@@ -23,6 +26,10 @@
     color: var(--button);
     padding: 1rem;
 
+    @include mobile {
+      height: 4rem;
+      font-size: 1.2rem;
+    }
     &::placeholder {
       color: var(--color-input);
       transition: 0.15s ease-in-out;
@@ -39,6 +46,15 @@
   &__attach {
     grid-column: 2 span;
     position: relative;
+    @include mobile {
+      grid-column: 1 span;
+
+      .form__input {
+        height: 8rem;
+        text-align: top;
+        vertical-align: top;
+      }
+    }
   }
   &__file {
     position: absolute;
@@ -64,6 +80,19 @@
       width: 1rem;
       height: 2rem;
     }
+    @include mobile {
+      top: 1rem;
+      right: 1rem;
+      transform: none;
+      width: 3.6rem;
+      height: 3.6rem;
+      padding: 0;
+    }
+    &-text {
+      @include mobile {
+        display: none;
+      }
+    }
   }
 
   &__row {
@@ -71,11 +100,20 @@
     justify-content: space-between;
     align-items: center;
     grid-column: 2 span;
+    @include mobile {
+      grid-column: 1 span;
+      display: block;
+    }
   }
 
   &__btn {
     width: 100%;
     max-width: 22rem;
+    @include mobile {
+      display: block;
+      margin: 0 auto;
+      max-width: 16.4rem;
+    }
   }
   &__box {
     display: block;
@@ -114,6 +152,11 @@
     line-height: 140%;
     color: var(--text);
 
+    @include mobile {
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
     input:checked ~ .form__box {
       &::before {
         opacity: 1;
@@ -122,21 +165,80 @@
   }
 }
 
-// @keyframes focus {
-//   0% {
-//     &::before {
-//       width: 100%;
-//     }
-//   }
-//   50% {
-//     &::before {
-//       width: 0;
-//       background-color: #000;
-//     }
-//   }
-//   100% {
-//     &::before {
-//       width: 100%;
-//     }
-//   }
-// }
+.form-file {
+  display: flex;
+  align-content: center;
+  gap: 1rem;
+
+  &__list {
+    position: absolute;
+    padding-bottom: 1rem;
+    bottom: 100%;
+    width: 100%;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    overflow-x: auto;
+    overflow-y: hidden;
+    text-overflow: ellipsis;
+    gap: 2rem;
+    @include mobile {
+      gap: 1rem;
+      bottom: unset;
+      top: 0;
+      padding-bottom: 0.3rem;
+    }
+    &::-webkit-scrollbar {
+      height: 5px;
+      @include mobile {
+        height: 2px;
+      }
+      width: 100%;
+      background-color: var(--color-input);
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--button);
+      border-radius: 20px;
+
+      cursor: grab;
+      &:active {
+        cursor: grabbing;
+      }
+    }
+  }
+
+  &__name {
+    font-family: var(--font-family);
+    font-weight: 300;
+    font-size: 1.4rem;
+    line-height: 100%;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+    color: var(--color-input);
+    transition: color 0.1s ease-out;
+    @include mobile {
+      font-size: 1rem;
+    }
+  }
+  &__rm {
+    font-family: var(--font-family);
+    font-weight: 300;
+    font-size: 2rem;
+    line-height: 100%;
+    line-height: 0;
+    letter-spacing: -0.04em;
+    color: var(--color-input);
+    transition: color 0.1s ease-out;
+    cursor: pointer;
+    @include mobile {
+      font-size: 1.2rem;
+    }
+  }
+  @include hover {
+    .form-file__name,
+    .form-file__rm {
+      color: var(--button);
+    }
+  }
+}

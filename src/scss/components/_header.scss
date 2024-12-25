@@ -2,11 +2,18 @@
 .header {
   padding: 2rem 0;
   border-bottom: 1px solid var(--button);
+  @include mobile {
+    padding: 1rem 2rem;
+  }
   &__container {
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: relative;
+
+    @include mobile {
+      justify-content: center;
+    }
   }
 
   &__logo {
@@ -17,7 +24,15 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+
+    @include mobile {
+      position: static;
+      transform: none;
+      width: 12rem;
+      height: 1rem;
+    }
     svg {
+      display: block;
       width: 100%;
       height: 100%;
       fill: var(--button);
@@ -32,6 +47,14 @@
     display: flex;
     align-items: center;
     gap: 4rem;
+    @include mobile {
+      display: none;
+    }
+  }
+  &__burger {
+    @include mobile {
+      display: none;
+    }
   }
   &__link {
     display: block;
