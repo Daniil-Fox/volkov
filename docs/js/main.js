@@ -230,8 +230,9 @@ const shader = {
 };
 class WEBGL {
   constructor(set) {
+    console.log(set);
     this.canvas = set.canvas;
-    this.webGLCurtain = new Curtains(set.curtains);
+    this.webGLCurtain = new Curtains(set.id);
     this.planeElement = set.planeElement;
     this.mouse = {
       x: 0,
@@ -289,23 +290,25 @@ class WEBGL {
   }
   initEvent() {
     this.planeElement.addEventListener("mouseenter", e => {
-      TweenMax.to(this.plane.uniforms.progress, 0.5, {
+      TweenMax.to(this.plane.uniforms.progress, 0.7, {
         value: 1
       });
     });
     this.planeElement.addEventListener("mouseout", e => {
-      TweenMax.to(this.plane.uniforms.progress, 0.5, {
+      TweenMax.to(this.plane.uniforms.progress, 0.7, {
         value: 0
       });
     });
   }
 }
-document.querySelectorAll(".canvas-wrap").forEach(el => {
-  const id = el.querySelector(".canvas-plane").id;
+const containers = document.querySelectorAll(".canvas-wrap");
+containers.forEach(cont => {
+  const id = cont.querySelector(".canvas-plane").id;
+  const canvas = cont.querySelector(`#${id}`);
   const webgl = new WEBGL({
-    canvas: el.querySelector(".canvas-plane"),
-    curtains: id,
-    planeElement: el.getElementsByClassName("plane")[0]
+    id: id,
+    canvas: canvas,
+    planeElement: cont.getElementsByClassName("plane")[0]
   });
   webgl.initPlane();
 });
