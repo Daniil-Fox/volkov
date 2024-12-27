@@ -1,16 +1,45 @@
 <div class="burger-menu">
-  <div class="burger-menu__body">
+  <div class="burger-menu__body container">
     <ul class="list-reset burger-menu__nav">
-      <li class="burger-menu__cat">Наше портфолио</li>
-      <li class="burger-menu__cat modal-btn">Расскажите о проекте</li>
+      <li class="burger-menu__cat burger-menu__item" data-cat="portfolio">
+        Наше портфолио
+        <span class="burger-menu__arr">
+          <svg
+            width="10"
+            height="16"
+            viewBox="0 0 10 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1.25939 0.127929C1.12502 0.127929 0.987499 0.181054 0.884375 0.284179C0.678124 0.490429 0.678124 0.827929 0.884375 1.03418L7.94375 8.09355L0.987499 15.0498C0.781248 15.2561 0.781248 15.5936 0.987499 15.7998C1.19375 16.0061 1.53125 16.0061 1.7375 15.7998L9.07187 8.46855C9.27812 8.2623 9.27812 7.9248 9.07187 7.71855L1.6375 0.284179C1.53125 0.177929 1.39689 0.127929 1.25939 0.127929Z"
+            />
+          </svg>
+        </span>
+      </li>
+
+      <li class="burger-menu__cat burger-menu__item modal-btn">
+        Расскажите о проекте
+      </li>
     </ul>
 
-    <div class="burger-menu__content">
-      <ul class="list-reset burger-menu__nav">
-        <li>
-          <a href="#"></a>
-        </li>
-      </ul>
+    <div class="burger-menu__wrapper">
+      <div class="burger-menu__content" data-content="portfolio">
+        <ul class="list-reset burger-menu__nav">
+          <li class="burger-menu__item">
+            <a href="#">Black angus premium grill</a>
+          </li>
+          <li class="burger-menu__item">
+            <a href="#">Принт-инсайт</a>
+          </li>
+          <li class="burger-menu__item">
+            <a href="#">Капитал строй</a>
+          </li>
+          <li class="burger-menu__item">
+            <a href="#">Продажа билетов</a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

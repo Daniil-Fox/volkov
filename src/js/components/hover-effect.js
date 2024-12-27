@@ -91,7 +91,6 @@ const shader = {
 };
 class WEBGL {
   constructor(set) {
-    console.log(set);
     this.canvas = set.canvas;
     this.webGLCurtain = new Curtains(set.id);
     this.planeElement = set.planeElement;

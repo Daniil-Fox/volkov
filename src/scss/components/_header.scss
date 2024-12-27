@@ -2,6 +2,8 @@
 .header {
   padding: 2rem 0;
   border-bottom: 1px solid var(--button);
+  position: relative;
+  background-color: #e8ebf1;
   @include mobile {
     padding: 1rem 2rem;
   }
@@ -10,7 +12,7 @@
     align-items: center;
     justify-content: space-between;
     position: relative;
-
+    z-index: 13;
     @include mobile {
       justify-content: center;
     }
@@ -52,6 +54,34 @@
     }
   }
   &__burger {
+    display: block;
+    width: 2.4rem;
+    height: 2.4rem;
+    position: relative;
+    cursor: pointer;
+    img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: 0.15s ease-in-out;
+      &:last-child {
+        opacity: 0;
+      }
+    }
+
+    &.active {
+      img {
+        &:first-child {
+          opacity: 0;
+        }
+        &:last-child {
+          opacity: 1;
+        }
+      }
+    }
     @include mobile {
       display: none;
     }

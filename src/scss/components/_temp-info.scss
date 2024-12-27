@@ -1,18 +1,36 @@
 .temp-info {
   padding: 8rem 0;
-
+  @include mobile {
+    padding: 2rem 0;
+  }
   &__container {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 2rem;
+
+    @include mobile {
+      display: block;
+    }
   }
 
   &__side {
-    grid-column: 4 span;
+    flex-grow: 1;
+    @include mobile {
+      display: flex;
+      align-items: flex-end;
+      flex-direction: row-reverse;
+      justify-content: space-between;
+      padding-bottom: 1.5rem;
+    }
   }
   &__date {
     font-family: var(--second-family);
     margin-bottom: 7.2rem;
+
+    @include mobile {
+      margin-bottom: 0;
+      font-size: 2.4rem;
+    }
   }
   &__item {
     font-family: var(--font-family);
@@ -20,9 +38,16 @@
     font-size: 1.4rem;
     line-height: 100%;
     color: var(--button);
-
+    flex-shrink: 0;
+    @include mobile {
+      font-size: 1.2rem;
+    }
     &:not(:last-child) {
       margin-bottom: 2rem;
+
+      @include mobile {
+        margin-bottom: 1.2rem;
+      }
     }
   }
   &__content {
@@ -34,13 +59,50 @@
     justify-content: space-between;
     gap: 2rem;
   }
+
+  &__wrapper {
+    grid-column: 4 span;
+    @include mobile {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.6rem;
+    }
+  }
+
   &__mob {
     grid-column: 3 span;
     height: 75rem;
+
+    @include mobile {
+      display: none;
+      height: 25.5rem;
+    }
+
+    &--mob {
+      display: none;
+
+      @include mobile {
+        display: block;
+        margin-top: -18rem;
+      }
+    }
   }
 
   &__title {
     margin-bottom: 7.2rem;
+    @include mobile {
+      display: none;
+    }
+
+    &--mob {
+      display: none;
+      @include mobile {
+        display: block;
+        margin-bottom: 3.6rem;
+        font-weight: 400;
+        font-size: 2.4rem;
+      }
+    }
   }
   &__link {
     font-weight: 400;

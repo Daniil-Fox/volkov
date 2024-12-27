@@ -3,8 +3,7 @@ import { EffectFade, Navigation } from "swiper/modules";
 
 Swiper.use([Navigation, EffectFade]);
 
-const pcSlider = new Swiper(".team-pc__slider", {
-  loop: true,
+const pcSlider = new Swiper(".temp-pc__slider", {
   slidesPerView: 1,
   effect: "fade",
   fadeEffect: {
@@ -16,8 +15,7 @@ const pcSlider = new Swiper(".team-pc__slider", {
   },
 });
 
-const mobSlider = new Swiper(".team-mob__slider", {
-  loop: true,
+const mobSlider = new Swiper(".temp-mob__slider", {
   slidesPerView: 1,
   effect: "fade",
   fadeEffect: {

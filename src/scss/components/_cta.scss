@@ -3,6 +3,11 @@
   @include mobile {
     padding: 4rem 0;
   }
+  &:not(.cta--portfolio) {
+    @include mobile {
+      display: none;
+    }
+  }
   &__container {
     max-width: 116.6rem;
     margin: 0 auto;

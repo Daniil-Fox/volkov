@@ -13,11 +13,58 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_sliders_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/sliders.js */ "./src/js/components/sliders.js");
 /* harmony import */ var _components_modal_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/modal.js */ "./src/js/components/modal.js");
 /* harmony import */ var _components_hover_effect_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/hover-effect.js */ "./src/js/components/hover-effect.js");
+/* harmony import */ var _components_burger_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/burger.js */ "./src/js/components/burger.js");
+/* harmony import */ var _components_load_more_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/load-more.js */ "./src/js/components/load-more.js");
+
+
 
 
 
 
 // import "./components/still.js";
+
+/***/ }),
+
+/***/ "./src/js/components/burger.js":
+/*!*************************************!*\
+  !*** ./src/js/components/burger.js ***!
+  \*************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+const burger = document.querySelector(".header__burger");
+if (burger) {
+  const burgerMenu = document.querySelector(".burger-menu");
+  const burgerCats = burgerMenu.querySelectorAll(".burger-menu__cat[data-cat]");
+  const burgerCatsContent = burgerMenu.querySelectorAll(".burger-menu__content");
+  function clearCats() {
+    burgerCats.forEach(el => el.classList.remove("active"));
+    burgerCatsContent.forEach(el => {
+      el.classList.remove("active");
+      el.style.maxHeight = null;
+    });
+  }
+  burger.addEventListener("click", e => {
+    burger.classList.toggle("active");
+    burgerMenu.classList.toggle("active");
+  });
+  burgerCats.forEach(cat => {
+    let counter = 0;
+    cat.addEventListener("click", e => {
+      counter += 1 % 2;
+      if (counter % 2 == 0) {
+        clearCats();
+      } else {
+        clearCats();
+        cat.classList.add("active");
+        const dataCat = cat.dataset.cat;
+        const currentContent = burgerMenu.querySelector(`.burger-menu__content[data-content=${dataCat}]`);
+        currentContent.classList.add("active");
+        currentContent.style.maxHeight = currentContent.scrollHeight + "px";
+      }
+    });
+  });
+}
 
 /***/ }),
 
@@ -29,104 +76,106 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const imageSources = ["./../img/animation/01.webp", "./../img/animation/02.webp", "./../img/animation/03.webp", "./../img/animation/04.webp", "./../img/animation/05.webp", "./../img/animation/06.webp"];
-let currentImageIndex = 0;
-let lastImageTime = 0;
-let lastX = 0;
-let lastY = 0;
-const images = [];
-const interval = 60;
-canvas.width = canvas.clientWidth;
-canvas.height = canvas.clientHeight;
-window.addEventListener("resize", e => {
+if (canvas) {
+  const ctx = canvas.getContext("2d");
+  const imageSources = ["./../img/animation/01.webp", "./../img/animation/02.webp", "./../img/animation/03.webp", "./../img/animation/04.webp", "./../img/animation/05.webp", "./../img/animation/06.webp"];
+  let currentImageIndex = 0;
+  let lastImageTime = 0;
+  let lastX = 0;
+  let lastY = 0;
+  const images = [];
+  const interval = 60;
   canvas.width = canvas.clientWidth;
   canvas.height = canvas.clientHeight;
-});
-const loadImage = src => {
-  return new Promise(resolve => {
-    const img = new Image();
-    img.src = src;
-    img.onload = () => resolve(img);
+  window.addEventListener("resize", e => {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
   });
-};
-const drawImages = () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  images.forEach(image => {
-    ctx.globalAlpha = image.opacity;
-    ctx.drawImage(image.img, image.x, image.y, image.width, image.height);
-  });
-};
-let lastTime = Date.now();
-const updateImages = () => {
-  let updateTime = Date.now();
-  lastTime = Date.now();
-  images.forEach((image, index) => {
-    // image.opacity -= 0.01;
-    if (image.opacity <= 0) {
-      images.splice(images.indexOf(image), 1);
-    } else {
-      // Smoothly move towards the cursor with a delay based on the index
-      const delayFactor = 0.04 - index * 0.003;
-      image.x += (image.targetX - image.x - 100) * delayFactor;
-      image.y += (image.targetY - image.y - 100) * delayFactor;
-    }
-  });
-  drawImages();
-  requestAnimationFrame(updateImages);
-};
-document.addEventListener("mousemove", async event => {
-  const now = Date.now();
-  const x = event.clientX - 20;
-  const y = event.clientY - 20;
-  if (Math.abs(x - lastX) < interval && Math.abs(y - lastY) < interval) return; // Check if cursor moved at least 40px
-  if (now - lastImageTime < 50) return; // Delay of 50ms
-  const img = await loadImage(imageSources[currentImageIndex]);
-  const newImage = {
-    img,
-    x,
-    y,
-    targetX: x - 20,
-    targetY: y - 20,
-    width: 0,
-    height: 0,
-    opacity: 1
+  const loadImage = src => {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => resolve(img);
+    });
   };
-  images.push(newImage);
-  const growAnimation = () => {
-    if (newImage.width < 140 && newImage.height < 90) {
-      newImage.width += 3; // Increase width
-      newImage.height += 1.5; // Increase height
-      requestAnimationFrame(growAnimation);
-    }
+  const drawImages = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    images.forEach(image => {
+      ctx.globalAlpha = image.opacity;
+      ctx.drawImage(image.img, image.x, image.y, image.width, image.height);
+    });
   };
-  growAnimation();
-  currentImageIndex = (currentImageIndex + 1) % imageSources.length;
-  lastImageTime = now;
-  lastX = x;
-  lastY = y;
-  document.addEventListener("mousemove", e => {
-    newImage.targetX = e.clientX;
-    newImage.targetY = e.clientY;
-  });
-
-  // Start fade-out after 100ms
-  setTimeout(() => {
-    const fadeOutAnimation = () => {
-      if (newImage.opacity > 0) {
-        newImage.opacity -= 0.05;
-        requestAnimationFrame(fadeOutAnimation);
+  let lastTime = Date.now();
+  const updateImages = () => {
+    let updateTime = Date.now();
+    lastTime = Date.now();
+    images.forEach((image, index) => {
+      // image.opacity -= 0.01;
+      if (image.opacity <= 0) {
+        images.splice(images.indexOf(image), 1);
       } else {
-        // Remove image from canvas
-        setTimeout(() => {
-          ctx.clearRect(newImage.x, newImage.y, newImage.width, newImage.height);
-        }, 100);
+        // Smoothly move towards the cursor with a delay based on the index
+        const delayFactor = 0.04 - index * 0.003;
+        image.x += (image.targetX - image.x - 100) * delayFactor;
+        image.y += (image.targetY - image.y - 100) * delayFactor;
+      }
+    });
+    drawImages();
+    requestAnimationFrame(updateImages);
+  };
+  document.addEventListener("mousemove", async event => {
+    const now = Date.now();
+    const x = event.clientX - 20;
+    const y = event.clientY - 20;
+    if (Math.abs(x - lastX) < interval && Math.abs(y - lastY) < interval) return; // Check if cursor moved at least 40px
+    if (now - lastImageTime < 50) return; // Delay of 50ms
+    const img = await loadImage(imageSources[currentImageIndex]);
+    const newImage = {
+      img,
+      x,
+      y,
+      targetX: x - 20,
+      targetY: y - 20,
+      width: 0,
+      height: 0,
+      opacity: 1
+    };
+    images.push(newImage);
+    const growAnimation = () => {
+      if (newImage.width < 140 && newImage.height < 90) {
+        newImage.width += 3; // Increase width
+        newImage.height += 1.5; // Increase height
+        requestAnimationFrame(growAnimation);
       }
     };
-    fadeOutAnimation();
-  }, 300); // Delay before starting fade-out
-});
-updateImages();
+    growAnimation();
+    currentImageIndex = (currentImageIndex + 1) % imageSources.length;
+    lastImageTime = now;
+    lastX = x;
+    lastY = y;
+    document.addEventListener("mousemove", e => {
+      newImage.targetX = e.clientX;
+      newImage.targetY = e.clientY;
+    });
+
+    // Start fade-out after 100ms
+    setTimeout(() => {
+      const fadeOutAnimation = () => {
+        if (newImage.opacity > 0) {
+          newImage.opacity -= 0.05;
+          requestAnimationFrame(fadeOutAnimation);
+        } else {
+          // Remove image from canvas
+          setTimeout(() => {
+            ctx.clearRect(newImage.x, newImage.y, newImage.width, newImage.height);
+          }, 100);
+        }
+      };
+      fadeOutAnimation();
+    }, 300); // Delay before starting fade-out
+  });
+  updateImages();
+}
 
 /***/ }),
 
@@ -230,7 +279,6 @@ const shader = {
 };
 class WEBGL {
   constructor(set) {
-    console.log(set);
     this.canvas = set.canvas;
     this.webGLCurtain = new Curtains(set.id);
     this.planeElement = set.planeElement;
@@ -315,6 +363,36 @@ containers.forEach(cont => {
 
 /***/ }),
 
+/***/ "./src/js/components/load-more.js":
+/*!****************************************!*\
+  !*** ./src/js/components/load-more.js ***!
+  \****************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+const portfolio = document.querySelector(".main-portfolio");
+if (portfolio) {
+  const loadMore = document.querySelector(".main-portfolio__more");
+  const portfolioItems = portfolio.querySelectorAll(".main-portfolio__item");
+  let visibleItems = 2;
+  [...portfolioItems].slice(visibleItems).forEach(el => el.classList.add("hide-item"));
+  if (visibleItems >= portfolioItems.length) {
+    loadMore.remove();
+  }
+  loadMore.addEventListener("click", e => {
+    e.preventDefault();
+    visibleItems += 2;
+    for (let i = 0; i < visibleItems; i++) {
+      portfolioItems[i].classList.remove("hide-item");
+    }
+    if (visibleItems >= portfolioItems.length) {
+      loadMore.remove();
+    }
+  });
+}
+
+/***/ }),
+
 /***/ "./src/js/components/modal.js":
 /*!************************************!*\
   !*** ./src/js/components/modal.js ***!
@@ -352,8 +430,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 swiper__WEBPACK_IMPORTED_MODULE_0__.Swiper.use([swiper_modules__WEBPACK_IMPORTED_MODULE_1__.Navigation, swiper_modules__WEBPACK_IMPORTED_MODULE_1__.EffectFade]);
-const pcSlider = new swiper__WEBPACK_IMPORTED_MODULE_0__.Swiper(".team-pc__slider", {
-  loop: true,
+const pcSlider = new swiper__WEBPACK_IMPORTED_MODULE_0__.Swiper(".temp-pc__slider", {
   slidesPerView: 1,
   effect: "fade",
   fadeEffect: {
@@ -364,8 +441,7 @@ const pcSlider = new swiper__WEBPACK_IMPORTED_MODULE_0__.Swiper(".team-pc__slide
     nextEl: ".temp-slider__arr--next"
   }
 });
-const mobSlider = new swiper__WEBPACK_IMPORTED_MODULE_0__.Swiper(".team-mob__slider", {
-  loop: true,
+const mobSlider = new swiper__WEBPACK_IMPORTED_MODULE_0__.Swiper(".temp-mob__slider", {
   slidesPerView: 1,
   effect: "fade",
   fadeEffect: {

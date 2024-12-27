@@ -1,5 +1,8 @@
 .main-portfolio {
   padding: 8rem 0;
+  @include mobile {
+    padding: 4rem 0;
+  }
   &__header {
     padding-bottom: 4rem;
     margin-bottom: 6.4rem;
